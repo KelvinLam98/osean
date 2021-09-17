@@ -1,0 +1,36 @@
+@(formType: String, dataForm: Form[PersonalData], errors: Array[String])(implicit flash: Flash, request: RequestHeader)
+
+@main("Add") {
+
+<form class="form" action="@routes.HomeController.postAddData" method="post">
+<div class="grid data-table" style="margin-bottom: 20px;">
+    <div class="col-12">
+        <input type="hidden" name="id" value="@dataForm("id").value">
+        <div class="grid">
+            <div class="col-3 col-lr-3 col-md-4 col-sm-12">Name</div>
+            <div class="col-9 col-lr-9 col-md-8 col-sm-12 input required @if(errors.contains("name")){error}">
+            <input type="text"  value="@dataForm("name").value">
+        </div>
+    </div>
+    <div class="grid">
+        <div class="col-3 col-lr-3 col-md-4 col-sm-12">Age</div>
+        <div class="col-9 col-lr-9 col-md-8 col-sm-12 input required @if(errors.contains("age")){error}">
+        <input type="text"  value="@dataForm("age").value">
+    </div>
+</div>
+<div class="grid">
+    <div class="col-3 col-lr-3 col-md-4 col-sm-12">address</div>
+    <div class="col-9 col-lr-9 col-md-8 col-sm-12 input required @if(errors.contains("address")){error}">
+    <input type="text"  value="@dataForm("address").value" >
+</div>
+</div>
+</div>
+</div>
+    <div class="grid">
+        <div class="col-12">
+            <input type="submit" value="create">
+        </div>
+    </div>
+
+</form>
+}

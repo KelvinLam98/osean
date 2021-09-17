@@ -1,0 +1,32 @@
+@(personal: Seq[PersonalData])
+@main("Overview Personal Detail") {
+<style>
+    th{ width: 100px;
+        text-align: left;
+        height: 20px;
+        padding: 10px;
+        background: lightblue;
+        }
+</style>
+
+<h1>Personal Details</h1>
+<hr>
+<button><a href="@routes.HomeController.createPersonalData">Add</a> </button>
+<br>
+<table>
+    <thead>
+    <tr><th>ID</th><th>Name</th><th>Age</th><th>Address</th><th>Delete Action</th><th>Edit Action</th></tr>
+    </thead>
+    <tbody>
+    @for(p <- personal) {
+    <tr><td>@p.id</td>
+        <td>@p.name</td>
+        <td>@p.age</td>
+        <td>@p.address</td>
+        <td><a href="#">Delete</a></td>
+        <td><a href="#">Edit</a></td></tr>
+    }
+    </tbody>
+</table>
+<hr>
+}
