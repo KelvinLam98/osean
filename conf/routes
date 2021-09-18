@@ -7,8 +7,9 @@
 GET     /                           controllers.HomeController.index()
 
 #PersonalData
-GET     /overview                   controllers.HomeController.overview()
+GET     /overview                   controllers.HomeController.overview
 GET     /overview/add               controllers.HomeController.createPersonalData
++ nocsrf
 POST    /overview/add/save          controllers.HomeController.postAddData
 
 # Map static resources from the /public folder to the /assets URL path

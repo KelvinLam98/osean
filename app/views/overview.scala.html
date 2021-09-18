@@ -1,5 +1,48 @@
-@(personal: Seq[PersonalData])
+@()(implicit flash: Flash, request: RequestHeader)
 @main("Overview Personal Detail") {
+<script>
+
+        $(document).ready(function(){
+            $('#data-table-personalData').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": "views/overview.json",
+                columns: [
+                    { data: 'name',
+                        "render": function(data, type, full, meta){
+                            return '<a href="currencies/' + full.id + '" class="link">' + data + '</a>';
+                        }
+                    },
+                    { data: 'age' },
+                    { data: 'address' },
+                    { data: null,
+                        "render": function(data, type, full, meta){
+                            return '<a href="overview/' + full.id + '/delete" class="link" onclick="return confirm(\'("Confirm remove")?\')"><img src="@routes.Assets.versioned("images/cross-icon.png")" style="margin:0px auto;display:block" alt="" width="10"></a>';
+                        }
+                    }
+                ],
+                "drawCallback": function () {
+                    $('.dataTables_paginate > .paginate_button').addClass('button plain');
+                    $('.dataTables_paginate > span').css("margin-left","5px ");
+                    $('.dataTables_paginate > span > .paginate_button').addClass('button plain');
+                    $('.dataTables_paginate > span > .paginate_button.current').removeClass('plain').addClass('success');
+                    $('.dataTables_paginate > span > .ellipsis').css("margin-left","5px ");
+                },
+                "language": {
+                    "emptyTable": "("NoSpacedataSpaceavailableSpaceinSpacetable")",
+                    "infoEmpty": "("ShowingSpace0SpacetoSpace0SpaceofSpace0Spaceentries")",
+                    "zeroRecords": "("NoSpacematchingSpacerecordsSpacefound")",
+                    "paginate": {
+                        "next":       "("Next")",
+                        "previous":   "("Previous")"
+                    },
+                    "info": "("ShowingSpace_START_SpacetoSpace_END_SpaceofSpace_TOTAL_Spaceentries")",
+                    "infoFiltered": "(("filteredSpacefromSpace_MAX_SpacetotalSpaceentries"))",
+                }
+            });
+
+        }
+</script>
 <style>
     th{ width: 100px;
         text-align: left;
@@ -13,19 +56,17 @@
 <hr>
 <button><a href="@routes.HomeController.createPersonalData">Add</a> </button>
 <br>
-<table>
+<table id="data-table-personalData">
     <thead>
     <tr><th>ID</th><th>Name</th><th>Age</th><th>Address</th><th>Delete Action</th><th>Edit Action</th></tr>
     </thead>
     <tbody>
-    @for(p <- personal) {
-    <tr><td>@p.id</td>
-        <td>@p.name</td>
-        <td>@p.age</td>
-        <td>@p.address</td>
-        <td><a href="#">Delete</a></td>
-        <td><a href="#">Edit</a></td></tr>
-    }
+    <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Address</th>
+        <th></th>
+    </tr>
     </tbody>
 </table>
 <hr>

@@ -1,7 +1,7 @@
 # --- !Ups
 
 CREATE TABLE `PersonalData` (
-  `id` varchar(128) not null,
+  `id` bigint not null auto_increment,
   `Name` varchar(64) not null,
   `Age` varchar(64) not null,
   `Address` varchar(128) not null,

@@ -9,19 +9,19 @@
         <div class="grid">
             <div class="col-3 col-lr-3 col-md-4 col-sm-12">Name</div>
             <div class="col-9 col-lr-9 col-md-8 col-sm-12 input required @if(errors.contains("name")){error}">
-            <input type="text"  value="@dataForm("name").value">
+            <input type="text" name="name" value="@dataForm("name").value">
         </div>
     </div>
     <div class="grid">
         <div class="col-3 col-lr-3 col-md-4 col-sm-12">Age</div>
         <div class="col-9 col-lr-9 col-md-8 col-sm-12 input required @if(errors.contains("age")){error}">
-        <input type="text"  value="@dataForm("age").value">
+        <input type="text" name="age" value="@dataForm("age").value">
     </div>
 </div>
 <div class="grid">
     <div class="col-3 col-lr-3 col-md-4 col-sm-12">address</div>
     <div class="col-9 col-lr-9 col-md-8 col-sm-12 input required @if(errors.contains("address")){error}">
-    <input type="text"  value="@dataForm("address").value" >
+    <input type="text" name="address" value="@dataForm("address").value" >
 </div>
 </div>
 </div>

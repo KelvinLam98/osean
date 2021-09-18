@@ -10,11 +10,13 @@ import play.api.data.Forms._
 import play.api.i18n.Messages.implicitMessagesProviderToMessages
 import play.api.mvc._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+
 import java.sql.Connection
 import javax.sql.DataSource
 import play.api.db.Database
-import scala.concurrent.Future
+import play.api.libs.json.Json
 
+import scala.concurrent.Future
 import scala.collection.mutable
 
 @Singleton
@@ -24,19 +26,33 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents, d
     Ok(views.html.index())
   }
 
-  def overview() = Action { implicit request: Request[AnyContent] =>
-      Ok(views.html.overview(personalDetail.toSeq))
+  def overview = Action { implicit request: Request[AnyContent] =>
+      Ok(views.html.overview())
   }
 
-  private var personalDetail = mutable.ArrayBuffer(
-    PersonalData(Option(1), "Emily" , 25  , "Kepong"),
-    PersonalData(Option(2), "John"  , 30  , "Old Klang Road"),
-    PersonalData(Option(3), "Jacky" , 27  , "Cheras")
-  )
+  def overviewJson = Action { implicit request =>
+    val start = request.getQueryString("start").map(_.toLong).getOrElse(0L)
+    val length = request.getQueryString("length").map(_.toLong).getOrElse(10L)
+    val draw: Int = request.getQueryString("draw").map(_.toInt).getOrElse(0)
+    val searchText = request.getQueryString("search[value]").getOrElse("")
+
+    db.withConnection { implicit conn =>
+      val total = PersonalData.countAll
+      val filtered = PersonalData.countFiltered(searchText)
+      val personalDetail = PersonalData.search(start, length, searchText)
+      Ok(Json.obj(
+        "draw" -> draw,
+        "recordsTotal" -> total,
+        "recordsFiltered" -> filtered,
+        "data" -> personalDetail
+      ))
+    }
+  }
+
 //  def personalDetails(id: Long) = Action { implicit request =>
 //    db.withConnection { implicit conn =>
 //      PersonalData.findById(id).map { pd =>
-//        Ok(views.html.overview.personalDetails(pd))
+//        Ok(views.html.personalDetailList(pd))
 //      }.getOrElse(NotFound)
 //    }
 //  }
@@ -64,15 +80,16 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents, d
   def postAddData = Action { implicit request =>
     dataForm.bindFromRequest().fold(
       hasErrors = { form =>
+        println(form.errors.map(_.key).mkString(","))
         Redirect(routes.HomeController.createPersonalData)
           .flashing(Flash(form.data)+
             ("errors" -> form.errors.map(_.key).mkString(",")))
       },
       success = { data =>
         db.withTransaction { implicit conn =>
-      val id: Long = PersonalData.insert(data)
-          println("xxx")
-        Redirect(routes.HomeController.overview())
+        val id: Long = PersonalData.insert(data)
+          println("success")
+        Redirect(routes.HomeController.overview)
           .flashing(Flash(Map("success" -> "post-create-currency-data-success")))
     }
     }
